@@ -10,11 +10,13 @@ import Cocoa
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-
-
-
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
+        
+        NSApplication.shared.mainWindow?.isMovableByWindowBackground = true
+        NSApplication.shared.mainWindow?.styleMask.remove(.resizable)
+        
         NSLog("Initializing application..")
     }
 
@@ -27,6 +29,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSLog("Application Terminated")
         return true
     }
-
 }
 

@@ -11,10 +11,11 @@ import Cocoa
 struct FilePaths {
     static var dBFMESettingsPath = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/Contents/Info.plist"
     static var optionsIniFilePath = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/drive_c/users/Wineskin/Application Data/My Battle for Middle-earth Files/options.ini"
-    static var userRegistry = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/Contents/Resources/user.reg"
+    static var userRegistry = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/drive_c/user.reg"
+    static var defaultGamePath = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/Contents/Resources/drive_c/Program Files/EA GAMES/The Battle for Middle-earth (tm)/lotrbfme.exe"
 }
 
-class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource {
+class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource, NSOpenSavePanelDelegate {
     @IBOutlet var resCB: NSComboBox!
     @IBOutlet var cancelBtn: NSButton!
     @IBOutlet var applyBtn: NSButton!
@@ -24,6 +25,15 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
     @IBOutlet var installModBtn: NSButton!
     @IBOutlet var useXQuartzChkBx: NSButton!
     @IBOutlet var decorateViewsBtn: NSButton!
+    @IBOutlet var detectGPU: NSButton!
+    @IBOutlet var decorateViews: NSButton!
+    @IBOutlet var forceWindowedchkBx: NSButton!
+    @IBOutlet var exeFlagsTextField: NSTextField!
+    @IBOutlet var gamesChooserCB: NSComboBox!
+    @IBOutlet var forceUseWrapperQuartzWM: NSButton!
+    @IBOutlet var multithreadingBtn: NSButton!
+    @IBOutlet var gameEXETxtField: NSTextField!
+    @IBOutlet var changeExeTxtField: NSButton!
     
     let defaultResolutionOptions = [
         "800 x 600",
@@ -40,9 +50,19 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
     var selectedItem: String!
     var alert: NSAlert!
     var errStr: String!
+    var recommendedIndex: Int?
+    
     var p_useXQuartz: Bool!
     var p_useDirect3D: Bool!
     var p_decorateViews: Bool!
+    var p_forceWindowdMode: Bool!
+    var p_selectedFilePath: String!
+    var p_exeFlags: String!
+    var p_forceWindowedMode: Bool!
+    var p_force_wrapper_use_quartz_wm: Bool!
+    var p_isThreadedLoad: Bool!
+    var p_selectedEXEPath: String!
+    var p_selectedResolutionIndex: Int!
     
     private var _specifiedAppName: String!
     public var specifiedAppName: String! {
@@ -53,13 +73,25 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
         }
     }
     
+    override func viewWillAppear() {
+        //self.view.window!.isOpaque = false
+        //self.view.window?.alphaValue; 0.8
+        //self.view.window!.backgroundColor = .clear
+        
+    
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.recommendedIndex = -1      // this will change before the user sees it
+        self.gamesChooserCB.selectItem(at: 0) // default selection
+        self.resolutionOptions = ["Select a resolution..."]
         
         if let tmpCB = resCB {
             var currentResIndex: Int!
             var tmpArr = Array<CGDisplayMode>.init(Display.modes)
-            self.resolutionOptions = [String]()
             tmpCB.delegate = self
             tmpCB.dataSource = self
             
@@ -74,9 +106,11 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
                 if tmpArr.count > 0 {
                     for mode in tmpArr { self.resolutionOptions.append(mode.resolution) }
                     self.resCB.selectItem(at: currentResIndex)
+                    
                 }
             }
             
+            //tmpCB.selectItem(at: currentResIndex)
             tmpCB.selectItem(at: currentResIndex)
         }
         
@@ -84,25 +118,81 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
             self.resolutionOptions = defaultResolutionOptions
         }
         
-        // Do any additional setup after loading the view.
+        Log("Valid screen resolutions detected for this display: \n\nSupported resolutionss[\n\(self.resolutionOptions.debugDescription)\n]")
+        Log("Automatically selecting the user's screen size unless specified otherwise...")
         
-        self.launchGameOnExitBox.state = .on    // launch app on exit by default
+        // get current screen resolution
+        if let scrn: NSScreen = NSScreen.main {
+            let rect: NSRect = scrn.frame
+            let height = rect.size.height
+            let width = rect.size.width
+            
+            let formattedStr = "\(width) x \(height)"
+            
+            // Compare it to see iff it's on the list--if it is, select that by default
+            var index: Int = 0
+            for str in self.resolutionOptions {
+                if str == formattedStr || str == Display.mode?.resolution {
+                    Log("\(self.resolutionOptions[index]) (Recommended)")
+                    self.p_selectedResolutionIndex = index
+                    break
+                }
+                
+                Log(self.resolutionOptions[index])
+                index += 1
+            }
+            
+            self.recommendedIndex = index // accounting for the first cell at index of -1
+            self.resCB.selectItem(at: p_selectedResolutionIndex!)
+            
+            // Do any additional setup after loading the view.
+            setupDefaultChkBxValues()
+            setupEXEPathTF()
+        }
+        
+    }
+    
+    func setupEXEPathTF() -> Void {
+        changeEXEPath(FilePaths.dBFMESettingsPath)
+    }
+    
+    func changeEXEPath(_ path: String!) -> Void {
+        if FileManager.default.fileExists(atPath: FilePaths.dBFMESettingsPath) {
+            Log("Property list file found successfully")
+            let plistDict = NSMutableDictionary(contentsOfFile: FilePaths.defaultGamePath)
+            self.p_selectedEXEPath = FilePaths.defaultGamePath
+            plistDict?.setValue(self.p_selectedEXEPath, forKey: "Program Name and Path")
+            self.gameEXETxtField.stringValue = p_selectedEXEPath
+        }
+    }
+    
+    fileprivate func setupDefaultChkBxValues() -> Void {
+        self.launchGameOnExitBox.state = .on
+        //self.forceWindowedchkBx.state = .off
+        
     }
     
     @IBAction func cancelBtnPressed(_ sender: Any) {
-        exitApplication()
+        //NSApplication.shared.undoManager?.undoNestedGroup()
+        //exitApplication()
+    }
+    
+    @IBAction func chgGameExeBtnPressed(_ sender: Any) {
+        browseModsBtnPressed(sender)
     }
     
     @available(macOS, deprecated: 10.10)
     @IBAction func applyBtnPressed(_ sender: Any) {
         let fileManager = FileManager.default
+        if resCB.indexOfSelectedItem == -1 {
+            
+        }
         
-        NSLog("Searching for file at path: \(FilePaths.dBFMESettingsPath)")
+        
+        Log("Searching for file at path: \(FilePaths.dBFMESettingsPath)")
         if fileManager.fileExists(atPath:  FilePaths.dBFMESettingsPath) {
-            NSLog("Property list file found successfully")
-            
+            Log("Property list file found successfully")
             let plistDict = NSMutableDictionary(contentsOfFile: FilePaths.dBFMESettingsPath)
-            
             var splitStr = self.resolutionOptions[resCB.indexOfSelectedItem].components(separatedBy: " x ")
             
             let xVal = splitStr[0]
@@ -110,10 +200,10 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
             
             
             // SET RESOLUTION
-            NSLog("Setting plist values...")
+            Log("Setting plist values...")
             plistDict?.setValue("-xres \(xVal) -yres \(yVal)" as AnyObject, forKey: "Program Flags")
             if plistDict != nil {
-                NSLog("Value set successfully")
+                Log("Value set successfully")
             }
             
             
@@ -121,25 +211,33 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
             self.p_useXQuartz = self.useXQuartzChkBx.state == .on
             plistDict?.setValue(self.p_useXQuartz, forKey: "Use XQuartz")
             
-            // Configure windows registry-related values
-            if fileManager.fileExists(atPath: FilePaths.userRegistry) {
+            self.p_force_wrapper_use_quartz_wm = self.forceUseWrapperQuartzWM!.state == .on
+            plistDict?.setValue(true, forKey: "force wrapper quartz-wm")
+            /*
                 if let registryDict = NSMutableDictionary(contentsOfFile: FilePaths.userRegistry) {
-                    
-                    
-                    NSLog("User registry data: \(registryDict)")
+                Log("User registry data: \(registryDict)")
+                 
+                 
+                    //if registryDict.keyEnumerator().contains(where: { (String) -> Bool in
+                        //keyWhen
+                    //})
                 }
-            }
+    */
+            //}
+            
+            self.p_isThreadedLoad = self.multithreadingBtn.state == .on
+            plistDict?.setValue(self.p_isThreadedLoad , forKey: "IsThreadedLoad")
             
             
-            
-            NSLog("Parsing and editing \"options.ini\" file at path:  \(FilePaths.optionsIniFilePath)")
+            Log("Parsing and editing \"options.ini\" file at path:  \(FilePaths.optionsIniFilePath)")
             parseAndEditIniFile(
                 with: fileManager,
                 withXValue: xVal,
                 withYValue: yVal
+                
             )
             
-            NSLog("\"options.ini\" file configured successfully")
+            Log("\"options.ini\" file configured successfully")
             
             do {
                 if #available(macOS 10.13, *) {
@@ -155,7 +253,7 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
                         atomically: true
                     )
                     
-                    NSLog("Replacement property list saved successfully")
+                    Log("Replacement property list saved successfully")
                 }
             } catch {
                 errStr = "ERROR: Unable to write to file at path \(FilePaths.dBFMESettingsPath)\nSkipping procedure"
@@ -171,12 +269,7 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
             clickResult = resultDialogue(prompt: "Settings changes applied successfully!", description: "The changes will be applied the next time the application is launched.")
         }
         
-        
-        if clickResult == true {
-            
-            // Asynchronously load BFME from dispatch queue while this app closes
-            //launchApplicationInPLIST()
-        }
+        launchApplicationInPLIST()
     }
     
     
@@ -188,18 +281,27 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
         let dialog = NSOpenPanel();
         dialog.title = "Choose a valid .exe/.msi file"
         dialog.showsResizeIndicator = true
-        dialog.showsHiddenFiles = false
-        dialog.canChooseDirectories = true
+        dialog.showsHiddenFiles = true
         dialog.canCreateDirectories = true
         dialog.allowsMultipleSelection = false
         dialog.allowedFileTypes  = ["exe", "msi"]
+        dialog.hasShadow = true
+        dialog.canChooseDirectories = false
+        dialog.resolvesAliases = true
+        dialog.treatsFilePackagesAsDirectories = true
         
-        if (dialog.runModal() == .OK) {
+        if dialog.runModal() == .OK {
             let result = dialog.url // Pathname of the file
             
-            if (result != nil) {
+            if result != nil {
                 let path = result?.path
-                self.fNInputField.stringValue = path!
+                if sender as? NSButton == self.browseModsBtn {
+                    self.fNInputField.stringValue = path!
+                } else if sender as? NSButton == self.changeExeTxtField {
+                    self.changeExeTxtField.stringValue = path!
+                }
+                
+                self.installModBtn.isEnabled = true
             }
         } else {
             // User clicked on "Cancel"
@@ -209,14 +311,19 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
     
     @IBAction func InstallModBtnPressed(_ sender: Any) {
         if self.fNInputField != nil && !self.fNInputField.stringValue.isEmpty {
-            NSLog("Checking for installation file at the specified path...")
+            Log("Checking for installation file at the specified path...")
             if FileManager.default.fileExists(atPath: self.fNInputField.stringValue) {
-                NSLog("File discovered. Launching in a new window...")
+                Log("File discovered. Launching in a new window...")
                 if FileManager.default.fileExists(atPath: FilePaths.dBFMESettingsPath) {
-                    NSLog("Property list file found successfully")
+                    Log("Property list file found successfully")
                     let plistDict = NSMutableDictionary(contentsOfFile: FilePaths.dBFMESettingsPath)
-                    NSLog("Setting plist values...")
+                    self.p_selectedFilePath = FilePaths.dBFMESettingsPath
+                    Log("Setting plist values...")
                     plistDict?.setValue(self.fNInputField.stringValue as AnyObject, forKey: "Program Name and Path")
+                    
+                   self.p_useXQuartz = self.useXQuartzChkBx.state == .on
+                    plistDict?.setValue(self.p_useXQuartz!.description, forKey: "Use XQuartz")
+                    
                     do {
                         if #available(macOS 10.13, *) {
                             try plistDict?.write(
@@ -231,10 +338,10 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
                                 atomically: true
                             )
                             
-                            NSLog("Replacement property list saved successfully")
+                            Log("Replacement property list saved successfully")
                         }
                         
-                        NSLog("Running installer package...")
+                        Log("Running installer package...")
                         launchApplicationInPLIST()
                         
                     } catch {
@@ -250,9 +357,11 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
             }
             
         } else {
-            NSLog("Install button pressed with no input. Ignoring action.")
+            Log("Install button pressed with no input. Ignoring action.")
         }
     }
+    
+    
     
     
     /// Parses the windows "options.ini" file (not supported by mac computers so we have to do it manually),
@@ -272,18 +381,19 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
                     let substringVal = fileContents.slice(from: resHeaderSubStr, to: "\n")
                     let newResVal = "\(xVal!) \(yVal!)"
                     
+                    
                     // Replace the value at the corresponding "Resolution" header with the string containing the new values
-                    NSLog("Replacing options.ini value: \"\(resHeaderSubStr.appending(substringVal!))\" --> \"\(resHeaderSubStr.appending(newResVal))\"")
+                    Log("Replacing options.ini value: \"\(resHeaderSubStr.appending(substringVal!))\" --> \"\(resHeaderSubStr.appending(newResVal))\"")
                     fileContents = fileContents.replacingOccurrences(of: substringVal!, with: newResVal)
-                    NSLog("Replacement successful")
+                    Log("Replacement successful")
                     
                     
                     // Delete old file with the incorrect value, and replace it with the file whose value
                     // was changed. This is only necessary because macOS doesn't support writing *.ini files
-                    NSLog("Removing old file...")
+                    Log("Removing old file...")
                     try fileManager.removeItem(atPath: FilePaths.optionsIniFilePath)
-                    NSLog("File removed successfully")
-                    NSLog("Creating and replacing the ini file with one containing the requested changes...")
+                    Log("File removed successfully")
+                    Log("Creating and replacing the ini file with one containing the requested changes...")
                     
                     // behaves similarly to JSON in the file writer
                     fileManager.createFile(
@@ -296,7 +406,7 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
                         ]
                     )
                     
-                    NSLog("File replaced successfully")
+                    Log("File replaced successfully")
                 }
             } catch {
                 self.errStr = "ERROR: Unable to write to \"options.ini\".\nSkipping procedure"
@@ -305,16 +415,13 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
     }
     
     func launchApplicationInPLIST() -> Void {
-        NSLog("Launching application saved in the property list...")
-        /*
-        OperationQueue.main.addOperation({
-            NSWorkspace.shared.launchApplication(self.defaultAppName)
-        })
- */
+        Log("Launching application saved in the property list...")
+        self.specifiedAppName = self.fNInputField.stringValue.isEmpty ? self.defaultAppName : self.fNInputField.stringValue
+        
+        Log("Creating launcher command to send to the environment...")
+        
         // Create a Task instance
         let task = Process()
-        
-        // Set the task parameters
         task.launchPath = "/usr/bin/env"
         task.arguments = []
         
@@ -322,26 +429,40 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
         // put all the output there
         let pipe = Pipe()
         task.standardOutput = pipe
-        
-        // Launch the task
         task.launch()
         
         // Get the data
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
         
-        NSLog(output! as String)
-        /*
-        NSLog("Bash shell script executed:\"\(ShellScriptExecutionTask.bash(command: "open \(self.defaultAppName)", arguments: ["-a", "Battle for Middle-Earth"]))\"")
- */
+        Log(output! as String)
         
-        NSLog("Application launched successfully")
+        if !self.specifiedAppName.contains(self.defaultAppName) {
+            Log("Bash shell script executed: %@", ShellScriptExecutionTask.bash(command: "open", arguments: [self.specifiedAppName, "-a", "Battle for Middle-Earth"]))
+            Log("Mods installer launched successfully")
+        } else {
+            Log("Bash shell script executed: %@", (ShellScriptExecutionTask.bash(command: "open", arguments: [ "-a", "Battle for Middle-Earth" ])))
+        }
     }
     
+    // Ensure we've capturd the right value for what application to launch before we leave
+    override func viewWillDisappear() {
+        if self.fNInputField.stringValue.isEmpty || self.launchGameOnExitBox.state == .on {
+            launchApplicationInPLIST()
+        }x
+    }
+    
+    
     fileprivate func exitApplication() -> Void {
-        NSLog("Closing window...n")
-        NSLog("Telling the application to open the game, if necessary")
+        Log("Closing window...")
+        Log("Telling the applicxation to open the game, if necessary")
+        if self.launchGameOnExitBox.state == .on {
+            launchApplicationInPLIST()
+            return
+        }
+        
         self.view.window?.close()
+        
     }
     
     @discardableResult func resultDialogue(prompt: String, description: String) -> Bool {
@@ -353,19 +474,28 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
         return self.alert.runModal() == .alertFirstButtonReturn
     }
     
-    override var representedObject: Any? {
-        didSet {
-            // Update the view, if already loaded.
-            self.selectedItem = self.resCB.objectValueOfSelectedItem as! String
-        }
-    }
-    
     func numberOfItems(in comboBox: NSComboBox) -> Int {
         return self.resolutionOptions.count
     }
     
+    
     func comboBox(_ comboBox: NSComboBox, objectValueForItemAt index: Int) -> Any? {
         return index > -1 ? self.resolutionOptions[index] : "Select a resolution..."
+    }
+    
+    // parse the resolution and set thevalues in the custom exe flags so it
+    // is set in both the application itself as well as the wine configuration
+    func comboBoxWillDismiss(_ notification: Notification) {
+        if self.resCB.indexOfSelectedItem > -1 {
+            let strForEXEFlag = self.resolutionOptions[self.resCB.indexOfSelectedItem]
+            let splitStr = strForEXEFlag.components(separatedBy: " x ")
+            
+            let xVal = splitStr[0]
+            let yVal = splitStr[1]
+            
+            let formattedStr = "-xres \(xVal) -yres \(yVal)"
+            self.exeFlagsTextField.stringValue = formattedStr
+        }
     }
 }
 

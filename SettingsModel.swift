@@ -34,7 +34,19 @@ func gameTypeFromTite(_ title: String) -> GameType {
 func exePathForGame(named gameName: String) -> String! {
     var tmpPath = ""
     
-    
+    switch gameName {
+    case "BFME":
+        tmpPath = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/Contents/Resources/drive_c/Program Files/EA GAMES/The Battle for Middle-earth (tm)/lotrbfme.exe"
+        break
+    case "BFME2":
+        tmpPath = "/Applications/Battle for Middle-Earth II/Rise of the Witch King.app/Contents/Resources/drive_c/Program Files/Electronic Arts/The Battle for Middle-earth (tm) II/lotrbfme2.exe"
+        break
+    case "ROTWK":
+        tmpPath = "/Applications/Battle for Middle-Earth II/Rise of the Witch King.app/Contents/Resources/drive_c/Program Files/Electronic Arts/The Lord of the Rings, The Rise of the Witch-king/lotrbfme2ep1.exe"
+        break
+    default:
+        tmpPath = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/Contents/Resources/drive_c/Program Files/EA GAMES/The Battle for Middle-earth (tm)/lotrbfme.exe"
+    }
     
     return tmpPath
 }

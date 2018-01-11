@@ -46,6 +46,7 @@ func exePathForGame(named gameName: String) -> String! {
         break
     default:
         tmpPath = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/Contents/Resources/drive_c/Program Files/EA GAMES/The Battle for Middle-earth (tm)/lotrbfme.exe"
+        break
     }
     
     return tmpPath

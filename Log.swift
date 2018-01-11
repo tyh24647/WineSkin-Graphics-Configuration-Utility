@@ -38,3 +38,16 @@ public func Log(_ format: String, _ args: CVarArg..., debugTxtView: AnyObject? =
     }
 }
 
+public func Log(_ format: String, _ args: CVarArg...) {
+    #if DEBUG
+        NSLog(format, args)
+    #endif
+}
+
+public func Log(_ message: String) {
+    #if DEBUG
+        NSLog(message)
+    #endif
+    
+}
+

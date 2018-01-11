@@ -22,6 +22,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         NSLog("Terminating application...")
+        
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -29,5 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSLog("Application Terminated")
         return true
     }
+    
+    
 }
 

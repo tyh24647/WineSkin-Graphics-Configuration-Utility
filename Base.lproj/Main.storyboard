@@ -1220,7 +1220,6 @@ AAAAAAAAAAAAAAAAAAHTA
                         <outlet property="applyBtn" destination="Sda-kS-AP9" id="2Sl-55-2Ks"/>
                         <outlet property="bgTitleView" destination="G47-R0-DMb" id="kHE-Qk-Zo5"/>
                         <outlet property="bgTitleViewBox" destination="s5Q-bU-oYD" id="Deu-v6-Fpc"/>
-                        <outlet property="bgView" destination="G47-R0-DMb" id="CxU-Hp-O82"/>
                         <outlet property="browseModsBtn" destination="H7q-fp-ZeH" id="Tv6-ZW-CL9"/>
                         <outlet property="cancelBtn" destination="8kN-a3-Fpy" id="Dcm-PK-YPL"/>
                         <outlet property="changeExeTxtField" destination="tky-TU-htm" id="ESH-Jf-y8l"/>

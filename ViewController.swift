@@ -91,10 +91,11 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
         //self.view.window?.alphaValue; 0.8
         //self.view.window!.backgroundColor = .clear
         
+        
         self.viewSrcCodeBtn.title = "View Source Code"
         //self.bgTitleViewBox.fillColor = .clear
         
-        self.fnFIlePath = StringConstants.Defaults.kBFME2_defaultPLISTLocalPath
+        self.fnFIlePath = StringConstants.Defaults.kBFME1_defaultPLISTLocalPath
     }
     
     override func viewDidLoad() {
@@ -119,15 +120,27 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
                 }
                 
                 if tmpArr.count > 0 {
-                    for mode in tmpArr { self.resolutionOptions.append(mode.resolution) }
-                    self.resCB.selectItem(at: currentResIndex)
+                    for mode in tmpArr {
+                        if !self.resolutionOptions.contains(mode.resolution) {
+                            self.resolutionOptions.append(mode.resolution)
+                            
+                        }
+                        
+                    }
+                    
+                    self.resCB.selectItem(at: self.resolutionOptions.index(of: resolution as String)!)
+                    //self.resCB.selectItem(at: currentResIndex)
                     
                 }
             }
             
-            //tmpCB.selectItem(at: currentResIndex)
+            currentResIndex = self.resolutionOptions.index(of: resolution as String)!
             tmpCB.selectItem(at: currentResIndex)
+            
+            //tmpCB.selectItem(at: currentResIndex)
+            self.resCB = tmpCB
         }
+        
         
         if self.resolutionOptions.count == 0 {
             self.resolutionOptions = defaultResolutionOptions
@@ -160,7 +173,9 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
             self.recommendedIndex = index // accounting for the first cell at index of -1
             self.resCB.selectItem(at: p_selectedResolutionIndex!)
             
+            
             // Do any additional setup after loading the view.
+            //self.resCB.selectItem(withObjectValue: self.resolutionOptions[self.recommendedIndex!])
             setupDefaultChkBxValues()
             setupEXEPathTF()
         }
@@ -171,6 +186,9 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
     @IBAction func gameCBSelected(_ sender: Any) {
         setupEXEPathTF()
     }
+    
+    
+    
     
     func setupEXEPathTF() -> Void {
         
@@ -648,6 +666,25 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
     
     func comboBox(_ comboBox: NSComboBox, objectValueForItemAt index: Int) -> Any? {
         return index > -1 ? self.resolutionOptions[index] : "Select a resolution..."
+    }
+    
+    /*
+    func comboBox(_ comboBox: NSComboBox, completedString string: String) -> String? {
+        
+    }\*/
+    
+    func comboBox(_ comboBox: NSComboBox, indexOfItemWithStringValue string: String) -> Int {
+        var itemIndex = 0
+        
+        for resolution in resolutionOptions {
+            if resolution == string {
+                return itemIndex
+            }
+            
+            itemIndex += 1
+        }
+        
+        return -1
     }
     
     // parse the resolution and set thevalues in the custom exe flags so it

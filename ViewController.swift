@@ -18,6 +18,8 @@ struct FilePaths {
 }
 
 class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource, NSOpenSavePanelDelegate {
+    
+    // MARK: Init IBOutlet vars
     @IBOutlet var resCB: NSComboBox!
     @IBOutlet var cancelBtn: NSButton!
     @IBOutlet var applyBtn: NSButton!
@@ -40,6 +42,8 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
     @IBOutlet var bgTitleViewBox: NSBox!
     @IBOutlet var bgTitleView: NSView!
     
+    // MARK: Init constants
+    let defaultAppName = "Battle for Middle-Earth"
     let defaultResolutionOptions = [
         "800 x 600",
         "1024 x 768",
@@ -50,7 +54,7 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
         "1920 x 1200"
     ]
     
-    let defaultAppName = "Battle for Middle-Earth"
+    // MARK: Init variables
     var resolutionOptions: [String]!
     var selectedItem: String!
     var alert: NSAlert!
@@ -60,6 +64,7 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
     var selectedGame: GameType!
     var fnFIlePath: String!
     
+    // MARK: Init player variables
     var p_useXQuartz: Bool!
     var p_useDirect3D: Bool!
     var p_decorateViews: Bool!
@@ -71,7 +76,6 @@ class ViewController: NSViewController, NSComboBoxDelegate, NSComboBoxDataSource
     var p_isThreadedLoad: Bool!
     var p_selectedEXEPath: String!
     var p_selectedResolutionIndex: Int!
-    
     
     private var _specifiedAppName: String!
     public var specifiedAppName: String! {

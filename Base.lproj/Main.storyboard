@@ -14,9 +14,9 @@
                 <application id="hnw-xV-0zn" sceneMemberID="viewController">
                     <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
                         <items>
-                            <menuItem title="BFME Resolution Settings" id="1Xt-HY-uBw">
+                            <menuItem title="Mac Ports Config Utility" id="1Xt-HY-uBw">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="BFME Resolution Settings" systemMenu="apple" id="uQy-DD-JDr">
+                                <menu key="submenu" title="Mac Ports Config Utility" systemMenu="apple" id="uQy-DD-JDr">
                                     <items>
                                         <menuItem title="About SettingsLauncher" id="5kV-Vb-QxS">
                                             <modifierMask key="keyEquivalentModifierMask"/>
@@ -758,7 +758,7 @@
                                 </view>
                             </box>
                             <visualEffectView wantsLayer="YES" appearanceType="vibrantDark" alphaValue="0.0" blendingMode="withinWindow" material="light" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="V36-0I-YnM">
-                                <rect key="frame" x="-1" y="0.0" width="658" height="357"/>
+                                <rect key="frame" x="-66" y="0.0" width="777" height="383"/>
                                 <backgroundFilters>
                                     <ciFilter name="CIGaussianBlur">
                                         <configuration>
@@ -770,7 +770,7 @@
                             </visualEffectView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0aF-le-Jed">
                                 <rect key="frame" x="17" y="112" width="94" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Game EXE:" id="hr3-bz-g2X">
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Launcher EXE:" id="hr3-bz-g2X">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -833,7 +833,7 @@
                             </box>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EIr-7A-iy9">
                                 <rect key="frame" x="83" y="58" width="482" height="20"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" baseWritingDirection="leftToRight" userInterfaceLayoutDirection="rightToLeft" alignment="left" placeholderString="Drag-and-drop or select mod installer here..." drawsBackground="YES" usesSingleLineMode="YES" id="bAb-Ec-cbd">
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" baseWritingDirection="leftToRight" userInterfaceLayoutDirection="rightToLeft" alignment="left" placeholderString="Select mod installer *.exe or *msi file..." drawsBackground="YES" usesSingleLineMode="YES" id="bAb-Ec-cbd">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -853,7 +853,7 @@
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oW8-js-WcX">
-                                <rect key="frame" x="18" y="64" width="70" height="15"/>
+                                <rect key="frame" x="18" y="60" width="70" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="66" id="jRY-FF-Xqe"/>
                                 </constraints>
@@ -977,6 +977,9 @@
                                         <string>ROTWK</string>
                                     </objectValues>
                                 </comboBoxCell>
+                                <connections>
+                                    <action selector="gameCBSelected:" target="XfG-lQ-9wD" id="gvo-UR-kTu"/>
+                                </connections>
                             </comboBox>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8kN-a3-Fpy">
                                 <rect key="frame" x="468" y="1" width="103" height="32"/>
@@ -1009,8 +1012,8 @@ Gw
                                 </buttonCell>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gga-BE-LEp">
-                                <rect key="frame" x="36" y="86" width="89" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Mods Instller" id="U24-dk-Isk">
+                                <rect key="frame" x="36" y="86" width="148" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Mods/Updates Instller" id="U24-dk-Isk">
                                     <font key="font" metaFont="systemBold"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1067,7 +1070,7 @@ Gw
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="launchGameBtnPressed:" target="XfG-lQ-9wD" id="7nm-Az-Z9s"/>
+                                    <action selector="viewSrcBtnPressed:" target="XfG-lQ-9wD" id="10U-lb-0tg"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -1082,7 +1085,7 @@ Gw
                             <constraint firstItem="EqR-xA-XAc" firstAttribute="top" secondItem="iZ1-KK-eOM" secondAttribute="bottom" constant="7" id="8Ka-ja-XCO"/>
                             <constraint firstItem="qm0-BB-CwA" firstAttribute="leading" secondItem="EIr-7A-iy9" secondAttribute="trailing" constant="79" id="941-kg-Gs9"/>
                             <constraint firstItem="ogc-lf-0vg" firstAttribute="top" secondItem="jmn-bv-rdt" secondAttribute="bottom" constant="46" id="9iB-FN-hvn"/>
-                            <constraint firstItem="9hp-bN-1PR" firstAttribute="top" secondItem="oW8-js-WcX" secondAttribute="bottom" constant="27" id="9vV-Ig-mz3"/>
+                            <constraint firstItem="9hp-bN-1PR" firstAttribute="top" secondItem="oW8-js-WcX" secondAttribute="bottom" constant="23" id="9vV-Ig-mz3"/>
                             <constraint firstItem="efF-2t-iSx" firstAttribute="leading" secondItem="fzy-Ci-QK4" secondAttribute="trailing" constant="26" id="A41-3Q-Acd"/>
                             <constraint firstItem="ogc-lf-0vg" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="38" id="B6p-fl-AzF"/>
                             <constraint firstItem="mLs-T3-zX4" firstAttribute="leading" secondItem="wUc-6N-hg9" secondAttribute="trailing" constant="5" id="BIz-Z9-GTA"/>
@@ -1115,7 +1118,7 @@ Gw
                             <constraint firstItem="Oy6-3O-3xE" firstAttribute="baseline" secondItem="wUc-6N-hg9" secondAttribute="baseline" id="O03-Oc-wCp"/>
                             <constraint firstItem="efF-2t-iSx" firstAttribute="leading" secondItem="7q6-Xu-1dx" secondAttribute="leading" id="O98-LF-b4m"/>
                             <constraint firstItem="2ym-5Q-3Ve" firstAttribute="trailing" secondItem="H7q-fp-ZeH" secondAttribute="trailing" id="PUM-H9-p8X"/>
-                            <constraint firstItem="oW8-js-WcX" firstAttribute="top" secondItem="gga-BE-LEp" secondAttribute="bottom" constant="7" id="QOh-64-Whu"/>
+                            <constraint firstItem="oW8-js-WcX" firstAttribute="top" secondItem="gga-BE-LEp" secondAttribute="bottom" constant="11" id="QOh-64-Whu"/>
                             <constraint firstItem="gga-BE-LEp" firstAttribute="top" secondItem="S02-EL-SHY" secondAttribute="bottom" constant="5" id="QbM-gq-WGv"/>
                             <constraint firstAttribute="trailing" secondItem="Ib0-j0-EYR" secondAttribute="trailing" constant="67" id="SNX-kT-VHl"/>
                             <constraint firstItem="xqn-2p-N0e" firstAttribute="top" secondItem="7q6-Xu-1dx" secondAttribute="bottom" constant="10" symbolic="YES" id="SQ2-Pg-e0v"/>
@@ -1131,10 +1134,10 @@ Gw
                             <constraint firstItem="jmn-bv-rdt" firstAttribute="trailing" secondItem="Ib0-j0-EYR" secondAttribute="trailing" id="W8t-V9-u8E"/>
                             <constraint firstItem="Oy6-3O-3xE" firstAttribute="leading" secondItem="xqn-2p-N0e" secondAttribute="trailing" constant="8" symbolic="YES" id="We3-An-yY7"/>
                             <constraint firstItem="EIr-7A-iy9" firstAttribute="trailing" secondItem="8kN-a3-Fpy" secondAttribute="trailing" id="Wss-fz-Zor"/>
-                            <constraint firstItem="V36-0I-YnM" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="-2" id="WzG-HK-H6K"/>
+                            <constraint firstItem="V36-0I-YnM" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="-28" id="WzG-HK-H6K"/>
                             <constraint firstItem="ZEc-5K-YHD" firstAttribute="centerY" secondItem="8kN-a3-Fpy" secondAttribute="centerY" id="X5c-zH-Slk"/>
                             <constraint firstItem="V4g-yb-LBS" firstAttribute="trailing" secondItem="PyC-bl-yGT" secondAttribute="trailing" id="X8X-Ny-Diz"/>
-                            <constraint firstItem="n0F-GL-t3G" firstAttribute="trailing" secondItem="V36-0I-YnM" secondAttribute="trailing" id="XHf-cL-Wso"/>
+                            <constraint firstItem="n0F-GL-t3G" firstAttribute="trailing" secondItem="V36-0I-YnM" secondAttribute="trailing" constant="-54" id="XHf-cL-Wso"/>
                             <constraint firstAttribute="trailing" secondItem="2ym-5Q-3Ve" secondAttribute="trailing" constant="20" symbolic="YES" id="XfB-ao-pcX"/>
                             <constraint firstItem="mLs-T3-zX4" firstAttribute="trailing" secondItem="Sda-kS-AP9" secondAttribute="trailing" id="Z10-D0-6mI"/>
                             <constraint firstItem="EqR-xA-XAc" firstAttribute="centerY" secondItem="qm0-BB-CwA" secondAttribute="centerY" id="ZlT-nY-Tk2"/>
@@ -1142,7 +1145,7 @@ Gw
                             <constraint firstItem="PyC-bl-yGT" firstAttribute="leading" secondItem="iZ1-KK-eOM" secondAttribute="leading" id="aHC-T6-jiW"/>
                             <constraint firstItem="n0F-GL-t3G" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="-16" id="acY-Bp-zSI"/>
                             <constraint firstItem="wUc-6N-hg9" firstAttribute="leading" secondItem="EqR-xA-XAc" secondAttribute="trailing" constant="11" id="b4S-Gl-ai3"/>
-                            <constraint firstItem="2ym-5Q-3Ve" firstAttribute="centerX" secondItem="V36-0I-YnM" secondAttribute="centerX" id="bEr-m7-MN8"/>
+                            <constraint firstItem="2ym-5Q-3Ve" firstAttribute="centerX" secondItem="V36-0I-YnM" secondAttribute="centerX" constant="6" id="bEr-m7-MN8"/>
                             <constraint firstItem="V4g-yb-LBS" firstAttribute="leading" secondItem="PyC-bl-yGT" secondAttribute="leading" id="bYk-eC-48v"/>
                             <constraint firstItem="jmn-bv-rdt" firstAttribute="leading" secondItem="Ib0-j0-EYR" secondAttribute="leading" id="c91-xm-tut"/>
                             <constraint firstItem="EIr-7A-iy9" firstAttribute="centerX" secondItem="h8O-sD-kI1" secondAttribute="centerX" id="cho-jp-ji3"/>
@@ -1231,11 +1234,11 @@ AAAAAAAAAAAAAAAAAAHTA
                         <outlet property="gameEXETxtField" destination="S02-EL-SHY" id="Zr6-Mf-fM9"/>
                         <outlet property="gamesChooserCB" destination="5wA-IV-s36" id="2cr-Ng-HhN"/>
                         <outlet property="installModBtn" destination="2wU-6R-Xyb" id="LfB-uK-c2M"/>
-                        <outlet property="launchGameBtn" destination="M3Q-yx-aE7" id="agF-BH-eBQ"/>
                         <outlet property="launchGameOnExitBox" destination="ZEc-5K-YHD" id="fOh-rA-AqT"/>
                         <outlet property="multithreadingBtn" destination="mLs-T3-zX4" id="at4-d4-YIn"/>
                         <outlet property="resCB" destination="efF-2t-iSx" id="963-gA-Dp1"/>
                         <outlet property="useXQuartzChkBx" destination="GKZ-Pp-sIO" id="iL9-P4-vYD"/>
+                        <outlet property="viewSrcCodeBtn" destination="M3Q-yx-aE7" id="l4q-4N-Obt"/>
                     </connections>
                 </viewController>
             </objects>

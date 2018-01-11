@@ -35,7 +35,7 @@ func exePathForGame(named gameName: String) -> String! {
     var tmpPath = ""
     
     switch gameName {
-    case "BFME":
+    case "BFME", "Battle for Middle Earth", "Battle for Middle-Earth":
         tmpPath = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/Contents/Resources/drive_c/Program Files/EA GAMES/The Battle for Middle-earth (tm)/lotrbfme.exe"
         break
     case "BFME2":

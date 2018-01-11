@@ -49,7 +49,7 @@ public class StringConstants {
         
         
         
-        static var kBFME2_defaultPLISTLocalPath = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/Contents/Info.plist"
+        static var kBFME1_defaultPLISTLocalPath = "/Applications/Battle for Middle-Earth/Battle for Middle-Earth.app/Contents/Info.plist"
         
     }
 }

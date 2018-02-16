@@ -16,4 +16,8 @@ Ty's Port Manager (a Wineskin custom configuration utility) is a unified launche
 
 - Tweak settings without having to dig through Wine/Wineskin's messy config files to change things, which is often not permitted by default
 
+-----------------
+
 ### Download the app **[here](https://drive.google.com/open?id=1ewBNH8erOQGyh3BaXGiP4TXrtaHjMJHQ)**
+
+For any questions, requests, or issues, feel free to contact me on here, [my Reddit page](https://www.reddit.com/user/tylero056), or send an email to tylero056.dev@gmail.com

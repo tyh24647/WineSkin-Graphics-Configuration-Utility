@@ -48,7 +48,7 @@ BFME1:
 
 - Do the same process as above, but in the BFME1 app
 
-~~Note: You'll only have to do that process in one spot instead of two, since BFME1 doesn't have an expansion pack~~
+*Note: You'll only have to do that process in one spot instead of two, since BFME1 doesn't have an expansion pack*
 
 -----
 &nbsp;

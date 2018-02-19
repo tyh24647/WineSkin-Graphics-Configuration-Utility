@@ -1,6 +1,6 @@
-Hey, since resolution switching isn't working for you, here's what should fix it for both apps:
+# MANUAL RESOLUTION CHANGING
 
-##BFME2:
+## BFME2:
 
 **Updating the app data**
 
@@ -44,7 +44,7 @@ Hey, since resolution switching isn't working for you, here's what should fix it
 
 --------
 
-BFME1:
+## BFME1:
 
 - Do the same process as above, but in the BFME1 app
 
